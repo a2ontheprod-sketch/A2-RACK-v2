@@ -1,0 +1,57 @@
+name: A2 RACK v2 - Build Windows VST3
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+    paths:
+      - 'Source/**'
+      - 'CMakeLists.txt'
+      - '.github/workflows/**'
+
+permissions:
+  contents: read
+
+jobs:
+  build-windows:
+    runs-on: windows-2022
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure JUCE and Visual Studio 2022
+        shell: pwsh
+        run: cmake -S . -B build -G "Visual Studio 17 2022" -A x64
+
+      - name: Build VST3 and standalone Release
+        shell: pwsh
+        run: cmake --build build --config Release --parallel 4
+
+      - name: Run DSP tests
+        shell: pwsh
+        run: ctest --test-dir build -C Release --output-on-failure
+
+      - name: Collect plugin and standalone into a ZIP
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path dist | Out-Null
+          $vst3s = @(Get-ChildItem -LiteralPath build -Directory -Recurse -Filter '*.vst3')
+          if ($vst3s.Count -lt 1) { throw 'VST3 bundle not found - inspect build log.' }
+          foreach ($plugin in $vst3s) {
+            Copy-Item -LiteralPath $plugin.FullName -Destination (Join-Path dist $plugin.Name) -Recurse -Force
+          }
+          $apps = @(Get-ChildItem -LiteralPath build -Recurse -File -Filter '*.exe' |
+            Where-Object { $_.FullName -like '*Standalone*' -and $_.Name -like '*A2*' })
+          foreach ($exe in $apps) { Copy-Item -LiteralPath $exe.FullName -Destination dist -Force }
+          Get-ChildItem -Path dist -Recurse | Select-Object FullName
+          if (-not (Test-Path 'dist/A2 RACK.vst3')) { Write-Warning 'Plugin name differs; check dist listing.' }
+
+      - name: Downloadable Windows plugin
+        uses: actions/upload-artifact@v4
+        with:
+          name: A2-RACK-v2-Windows
+          path: dist/**
+          if-no-files-found: error
+          compression-level: 6
+          retention-days: 90
