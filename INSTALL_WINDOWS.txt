@@ -1,0 +1,18 @@
+A2 RACK v2 — QUICK START
+
+1) Create GitHub repository A2-RACK-v2.
+2) Clone with GitHub Desktop.
+3) Copy the EXTRACTED ZIP CONTENTS into that repo (including .github folder).
+4) Commit / Push origin.
+5) Repo on GitHub > Actions > A2 RACK v2 - Build Windows VST3.
+6) Run workflow or open automatic run. Wait for green tick.
+7) Click downloadable artifact 'A2-RACK-v2-Windows'.
+8) Extract; copy A2 RACK.vst3 directory to:
+   C:\Program Files\Common Files\VST3
+9) FL Studio > Options > Manage plugins > Find installed plugins.
+10) Add A2 RACK on the Master mixer insert.
+
+Tip: Start with MASTER and low DRIVE. Heavy wavefolding is meant for effect.
+
+WARNING: This ZIP contains SOURCE, not a compiled plugin.
+See README.md for troubleshooting.
