@@ -3,13 +3,13 @@
 
 namespace
 {
-constexpr auto black = juce::Colour (0xff070808);
-constexpr auto panel = juce::Colour (0xff0f1012);
-constexpr auto steel = juce::Colour (0xff373838);
-constexpr auto white = juce::Colour (0xffe2e1dc);
-constexpr auto muted = juce::Colour (0xff92918d);
-constexpr auto red = juce::Colour (0xffb52829);
-constexpr auto green = juce::Colour (0xff35aa65);
+const auto black = juce::Colour (0xff070808);
+const auto panel = juce::Colour (0xff0f1012);
+const auto steel = juce::Colour (0xff373838);
+const auto white = juce::Colour (0xffe2e1dc);
+const auto muted = juce::Colour (0xff92918d);
+const auto red = juce::Colour (0xffb52829);
+const auto green = juce::Colour (0xff35aa65);
 
 void drawScrew (juce::Graphics& g, float x, float y)
 {
